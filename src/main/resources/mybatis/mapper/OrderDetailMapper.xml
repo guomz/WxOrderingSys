@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guomz.orderingsys.dao.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.guomz.orderingsys.entity.OrderDetail">
+    <id column="order_detail_id" jdbcType="VARCHAR" property="order_detail_id" />
+    <result column="order_id" jdbcType="VARCHAR" property="order_id" />
+    <result column="product_id" jdbcType="VARCHAR" property="product_id" />
+    <result column="product_name" jdbcType="VARCHAR" property="product_name" />
+    <result column="product_price" jdbcType="DECIMAL" property="product_price" />
+    <result column="product_quantity" jdbcType="DECIMAL" property="product_quantity" />
+    <result column="product_icon" jdbcType="VARCHAR" property="product_icon" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_detail_id, order_id, product_id, product_name, product_price, product_quantity, 
+    product_icon, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_detail
+    where order_detail_id = #{order_detail_id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from order_detail
+    where order_detail_id = #{order_detail_id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.guomz.orderingsys.entity.OrderDetail">
+    insert into order_detail (order_detail_id, order_id, product_id, 
+      product_name, product_price, product_quantity, 
+      product_icon, create_time, update_time
+      )
+    values (#{order_detail_id,jdbcType=VARCHAR}, #{order_id,jdbcType=VARCHAR}, #{product_id,jdbcType=VARCHAR}, 
+      #{product_name,jdbcType=VARCHAR}, #{product_price,jdbcType=DECIMAL}, #{product_quantity,jdbcType=DECIMAL}, 
+      #{product_icon,jdbcType=VARCHAR}, #{create_time,jdbcType=TIMESTAMP}, #{update_time,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.guomz.orderingsys.entity.OrderDetail">
+    insert into order_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="order_detail_id != null">
+        order_detail_id,
+      </if>
+      <if test="order_id != null">
+        order_id,
+      </if>
+      <if test="product_id != null">
+        product_id,
+      </if>
+      <if test="product_name != null">
+        product_name,
+      </if>
+      <if test="product_price != null">
+        product_price,
+      </if>
+      <if test="product_quantity != null">
+        product_quantity,
+      </if>
+      <if test="product_icon != null">
+        product_icon,
+      </if>
+      <if test="create_time != null">
+        create_time,
+      </if>
+      <if test="update_time != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="order_detail_id != null">
+        #{order_detail_id,jdbcType=VARCHAR},
+      </if>
+      <if test="order_id != null">
+        #{order_id,jdbcType=VARCHAR},
+      </if>
+      <if test="product_id != null">
+        #{product_id,jdbcType=VARCHAR},
+      </if>
+      <if test="product_name != null">
+        #{product_name,jdbcType=VARCHAR},
+      </if>
+      <if test="product_price != null">
+        #{product_price,jdbcType=DECIMAL},
+      </if>
+      <if test="product_quantity != null">
+        #{product_quantity,jdbcType=DECIMAL},
+      </if>
+      <if test="product_icon != null">
+        #{product_icon,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null">
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update_time != null">
+        #{update_time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.guomz.orderingsys.entity.OrderDetail">
+    update order_detail
+    <set>
+      <if test="order_id != null">
+        order_id = #{order_id,jdbcType=VARCHAR},
+      </if>
+      <if test="product_id != null">
+        product_id = #{product_id,jdbcType=VARCHAR},
+      </if>
+      <if test="product_name != null">
+        product_name = #{product_name,jdbcType=VARCHAR},
+      </if>
+      <if test="product_price != null">
+        product_price = #{product_price,jdbcType=DECIMAL},
+      </if>
+      <if test="product_quantity != null">
+        product_quantity = #{product_quantity,jdbcType=DECIMAL},
+      </if>
+      <if test="product_icon != null">
+        product_icon = #{product_icon,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null">
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update_time != null">
+        update_time = #{update_time,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where order_detail_id = #{order_detail_id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.guomz.orderingsys.entity.OrderDetail">
+    update order_detail
+    set order_id = #{order_id,jdbcType=VARCHAR},
+      product_id = #{product_id,jdbcType=VARCHAR},
+      product_name = #{product_name,jdbcType=VARCHAR},
+      product_price = #{product_price,jdbcType=DECIMAL},
+      product_quantity = #{product_quantity,jdbcType=DECIMAL},
+      product_icon = #{product_icon,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      update_time = #{update_time,jdbcType=TIMESTAMP}
+    where order_detail_id = #{order_detail_id,jdbcType=VARCHAR}
+  </update>
+</mapper>
