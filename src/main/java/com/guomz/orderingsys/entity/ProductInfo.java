@@ -24,6 +24,8 @@ public class ProductInfo {
 
     private Date updateTime;
 
+    private Integer productStatus;
+
     public String getProductId() {
         return productId;
     }

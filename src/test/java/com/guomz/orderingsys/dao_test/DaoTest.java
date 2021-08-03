@@ -1,10 +1,13 @@
 package com.guomz.orderingsys.dao_test;
 import java.math.BigDecimal;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.guomz.orderingsys.dao.ProductCategoryMapper;
 import com.guomz.orderingsys.dao.ProductInfoMapper;
 import com.guomz.orderingsys.domain.condition.ProductCategoryCondition;
 import com.guomz.orderingsys.domain.condition.ProductInfoCondition;
+import com.guomz.orderingsys.domain.resp.PageResponse;
 import com.guomz.orderingsys.entity.ProductCategory;
 import com.guomz.orderingsys.entity.ProductInfo;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 public class DaoTest {
@@ -48,5 +52,13 @@ public class DaoTest {
 
         productInfoMapper.insert(productInfo);
         productInfoMapper.selectByCondition(new ProductInfoCondition()).forEach(System.out::println);
+    }
+
+    @Test
+    public void testCategoryByPage(){
+        PageHelper.startPage(1,1);
+        List<ProductCategory> categoryList = productCategoryMapper.selectByCondition(new ProductCategoryCondition());
+        PageInfo pageInfo = new PageInfo(categoryList);
+        System.out.println(new PageResponse<ProductCategory>(pageInfo));
     }
 }

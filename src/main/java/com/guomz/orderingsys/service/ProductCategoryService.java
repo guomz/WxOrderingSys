@@ -2,6 +2,8 @@ package com.guomz.orderingsys.service;
 
 import com.guomz.orderingsys.entity.ProductCategory;
 
+import java.util.List;
+
 public interface ProductCategoryService {
 
     ProductCategory getCategoryById(Long id);
@@ -9,4 +11,6 @@ public interface ProductCategoryService {
     ProductCategory getCategoryByType(Integer categoryType);
 
     void addCategory(ProductCategory productCategory);
+
+    List<ProductCategory> getAllCategory();
 }

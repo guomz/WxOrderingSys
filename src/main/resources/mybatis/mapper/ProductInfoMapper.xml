@@ -9,12 +9,13 @@
     <result column="product_description" jdbcType="VARCHAR" property="productDescription" />
     <result column="product_icon" jdbcType="VARCHAR" property="productIcon" />
     <result column="product_category_type" jdbcType="INTEGER" property="productCategoryType" />
+    <result column="product_status" jdbcType="INTEGER" property="productStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     product_id, product_name, product_price, product_stock, product_description, product_icon, 
-    product_category_type, create_time, update_time
+    product_category_type, create_time, update_time, product_status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -29,11 +30,12 @@
   <insert id="insert" parameterType="com.guomz.orderingsys.entity.ProductInfo">
     insert into product_info (product_id, product_name, product_price, 
       product_stock, product_description, product_icon, 
-      product_category_type, create_time, update_time
+      product_category_type, create_time, update_time,product_status
       )
     values (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL}, 
       #{productStock,jdbcType=INTEGER}, #{productDescription,jdbcType=VARCHAR}, #{productIcon,jdbcType=VARCHAR}, 
-      #{productCategoryType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      #{productCategoryType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+            #{productStatus}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.guomz.orderingsys.entity.ProductInfo">
@@ -66,6 +68,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="productStatus != null">
+        product_status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="productId != null">
@@ -94,6 +99,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productStatus != null">
+        #{productStatus},
       </if>
     </trim>
   </insert>
@@ -124,6 +132,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="productStatus != null">
+        product_status = #{productStatus},
+      </if>
     </set>
     where product_id = #{productId,jdbcType=VARCHAR}
   </update>
@@ -136,7 +147,8 @@
       product_icon = #{productIcon,jdbcType=VARCHAR},
       product_category_type = #{productCategoryType,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+        product_status = #{productStatus},
     where product_id = #{productId,jdbcType=VARCHAR}
   </update>
 
@@ -153,6 +165,9 @@
       </if>
       <if test="productId != null">
         and product_id = #{productId}
+      </if>
+      <if test="productStatus != null">
+        and product_status=#{productStatus}
       </if>
     </where>
   </select>

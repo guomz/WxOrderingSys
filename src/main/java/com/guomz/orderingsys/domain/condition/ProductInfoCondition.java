@@ -8,4 +8,5 @@ public class ProductInfoCondition {
     private String productName;
     private String productId;
     private Integer productCategoryType;
+    private Integer productStatus;
 }
