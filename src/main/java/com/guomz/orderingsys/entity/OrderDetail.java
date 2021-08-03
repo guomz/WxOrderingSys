@@ -4,93 +4,93 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderDetail {
-    private String order_detail_id;
+    private String orderDetailId;
 
-    private String order_id;
+    private String orderId;
 
-    private String product_id;
+    private String productId;
 
-    private String product_name;
+    private String productName;
 
-    private BigDecimal product_price;
+    private BigDecimal productPrice;
 
-    private BigDecimal product_quantity;
+    private BigDecimal productQuantity;
 
-    private String product_icon;
+    private String productIcon;
 
-    private Date create_time;
+    private Date createTime;
 
-    private Date update_time;
+    private Date updateTime;
 
-    public String getOrder_detail_id() {
-        return order_detail_id;
+    public String getOrderDetailId() {
+        return orderDetailId;
     }
 
-    public void setOrder_detail_id(String order_detail_id) {
-        this.order_detail_id = order_detail_id;
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
     }
 
-    public String getOrder_id() {
-        return order_id;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(String order_id) {
-        this.order_id = order_id;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public String getProduct_id() {
-        return product_id;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
-    public String getProduct_name() {
-        return product_name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public BigDecimal getProduct_price() {
-        return product_price;
+    public BigDecimal getProductPrice() {
+        return productPrice;
     }
 
-    public void setProduct_price(BigDecimal product_price) {
-        this.product_price = product_price;
+    public void setProductPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
     }
 
-    public BigDecimal getProduct_quantity() {
-        return product_quantity;
+    public BigDecimal getProductQuantity() {
+        return productQuantity;
     }
 
-    public void setProduct_quantity(BigDecimal product_quantity) {
-        this.product_quantity = product_quantity;
+    public void setProductQuantity(BigDecimal productQuantity) {
+        this.productQuantity = productQuantity;
     }
 
-    public String getProduct_icon() {
-        return product_icon;
+    public String getProductIcon() {
+        return productIcon;
     }
 
-    public void setProduct_icon(String product_icon) {
-        this.product_icon = product_icon;
+    public void setProductIcon(String productIcon) {
+        this.productIcon = productIcon;
     }
 
-    public Date getCreate_time() {
-        return create_time;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate_time(Date create_time) {
-        this.create_time = create_time;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdate_time() {
-        return update_time;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate_time(Date update_time) {
-        this.update_time = update_time;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

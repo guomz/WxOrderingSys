@@ -1,15 +1,11 @@
 package com.guomz.orderingsys.service;
 
-import com.guomz.orderingsys.dao.ProductCategoryMapper;
-import org.springframework.stereotype.Service;
+import com.guomz.orderingsys.entity.ProductCategory;
 
-import javax.annotation.Resource;
+public interface ProductCategoryService {
 
-@Service
-public class ProductCategoryService {
+    ProductCategory getCategoryById(Long id);
 
-    @Resource
-    private ProductCategoryMapper productCategoryMapper;
-
+    ProductCategory getCategoryByType(Integer categoryType);
 
 }

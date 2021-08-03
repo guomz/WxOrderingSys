@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.guomz.orderingsys.dao.ProductCategoryMapper">
   <resultMap id="BaseResultMap" type="com.guomz.orderingsys.entity.ProductCategory">
-    <id column="category_id" jdbcType="BIGINT" property="category_id" />
-    <result column="category_name" jdbcType="VARCHAR" property="category_name" />
-    <result column="category_type" jdbcType="INTEGER" property="category_type" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+    <id column="category_id" jdbcType="BIGINT" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_type" jdbcType="INTEGER" property="categoryType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     category_id, category_name, category_type, create_time, update_time
@@ -15,79 +15,90 @@
     select 
     <include refid="Base_Column_List" />
     from product_category
-    where category_id = #{category_id,jdbcType=BIGINT}
+    where category_id = #{categoryId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_category
-    where category_id = #{category_id,jdbcType=BIGINT}
+    where category_id = #{categoryId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.guomz.orderingsys.entity.ProductCategory">
     insert into product_category (category_id, category_name, category_type, 
       create_time, update_time)
-    values (#{category_id,jdbcType=BIGINT}, #{category_name,jdbcType=VARCHAR}, #{category_type,jdbcType=INTEGER}, 
-      #{create_time,jdbcType=TIMESTAMP}, #{update_time,jdbcType=TIMESTAMP})
+    values (#{categoryId,jdbcType=BIGINT}, #{categoryName,jdbcType=VARCHAR}, #{categoryType,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.guomz.orderingsys.entity.ProductCategory">
     insert into product_category
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="category_id != null">
+      <if test="categoryId != null">
         category_id,
       </if>
-      <if test="category_name != null">
+      <if test="categoryName != null">
         category_name,
       </if>
-      <if test="category_type != null">
+      <if test="categoryType != null">
         category_type,
       </if>
-      <if test="create_time != null">
+      <if test="createTime != null">
         create_time,
       </if>
-      <if test="update_time != null">
+      <if test="updateTime != null">
         update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="category_id != null">
-        #{category_id,jdbcType=BIGINT},
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=BIGINT},
       </if>
-      <if test="category_name != null">
-        #{category_name,jdbcType=VARCHAR},
+      <if test="categoryName != null">
+        #{categoryName,jdbcType=VARCHAR},
       </if>
-      <if test="category_type != null">
-        #{category_type,jdbcType=INTEGER},
+      <if test="categoryType != null">
+        #{categoryType,jdbcType=INTEGER},
       </if>
-      <if test="create_time != null">
-        #{create_time,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="update_time != null">
-        #{update_time,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.guomz.orderingsys.entity.ProductCategory">
     update product_category
     <set>
-      <if test="category_name != null">
-        category_name = #{category_name,jdbcType=VARCHAR},
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
       </if>
-      <if test="category_type != null">
-        category_type = #{category_type,jdbcType=INTEGER},
+      <if test="categoryType != null">
+        category_type = #{categoryType,jdbcType=INTEGER},
       </if>
-      <if test="create_time != null">
-        create_time = #{create_time,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="update_time != null">
-        update_time = #{update_time,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where category_id = #{category_id,jdbcType=BIGINT}
+    where category_id = #{categoryId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.guomz.orderingsys.entity.ProductCategory">
     update product_category
-    set category_name = #{category_name,jdbcType=VARCHAR},
-      category_type = #{category_type,jdbcType=INTEGER},
-      create_time = #{create_time,jdbcType=TIMESTAMP},
-      update_time = #{update_time,jdbcType=TIMESTAMP}
-    where category_id = #{category_id,jdbcType=BIGINT}
+    set category_name = #{categoryName,jdbcType=VARCHAR},
+      category_type = #{categoryType,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where category_id = #{categoryId,jdbcType=BIGINT}
   </update>
+
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="com.guomz.orderingsys.domain.ProductCategoryCondition">
+    select
+    <include refid="Base_Column_List" />
+    from product_category
+    <where>
+      <if test="categoryType != null">
+        and category_type=#{categoryType}
+      </if>
+    </where>
+  </select>
 </mapper>

@@ -4,103 +4,103 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderMaster {
-    private String order_id;
+    private String orderId;
 
-    private String buyer_name;
+    private String buyerName;
 
-    private String buyer_phone;
+    private String buyerPhone;
 
-    private String buyer_address;
+    private String buyerAddress;
 
-    private String buyer_openid;
+    private String buyerOpenid;
 
-    private BigDecimal order_amount;
+    private BigDecimal orderAmount;
 
-    private Integer order_status;
+    private Integer orderStatus;
 
-    private Integer pay_status;
+    private Integer payStatus;
 
-    private Date create_time;
+    private Date createTime;
 
-    private Date update_time;
+    private Date updateTime;
 
-    public String getOrder_id() {
-        return order_id;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(String order_id) {
-        this.order_id = order_id;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
-    public String getBuyer_name() {
-        return buyer_name;
+    public String getBuyerName() {
+        return buyerName;
     }
 
-    public void setBuyer_name(String buyer_name) {
-        this.buyer_name = buyer_name;
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 
-    public String getBuyer_phone() {
-        return buyer_phone;
+    public String getBuyerPhone() {
+        return buyerPhone;
     }
 
-    public void setBuyer_phone(String buyer_phone) {
-        this.buyer_phone = buyer_phone;
+    public void setBuyerPhone(String buyerPhone) {
+        this.buyerPhone = buyerPhone;
     }
 
-    public String getBuyer_address() {
-        return buyer_address;
+    public String getBuyerAddress() {
+        return buyerAddress;
     }
 
-    public void setBuyer_address(String buyer_address) {
-        this.buyer_address = buyer_address;
+    public void setBuyerAddress(String buyerAddress) {
+        this.buyerAddress = buyerAddress;
     }
 
-    public String getBuyer_openid() {
-        return buyer_openid;
+    public String getBuyerOpenid() {
+        return buyerOpenid;
     }
 
-    public void setBuyer_openid(String buyer_openid) {
-        this.buyer_openid = buyer_openid;
+    public void setBuyerOpenid(String buyerOpenid) {
+        this.buyerOpenid = buyerOpenid;
     }
 
-    public BigDecimal getOrder_amount() {
-        return order_amount;
+    public BigDecimal getOrderAmount() {
+        return orderAmount;
     }
 
-    public void setOrder_amount(BigDecimal order_amount) {
-        this.order_amount = order_amount;
+    public void setOrderAmount(BigDecimal orderAmount) {
+        this.orderAmount = orderAmount;
     }
 
-    public Integer getOrder_status() {
-        return order_status;
+    public Integer getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrder_status(Integer order_status) {
-        this.order_status = order_status;
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
-    public Integer getPay_status() {
-        return pay_status;
+    public Integer getPayStatus() {
+        return payStatus;
     }
 
-    public void setPay_status(Integer pay_status) {
-        this.pay_status = pay_status;
+    public void setPayStatus(Integer payStatus) {
+        this.payStatus = payStatus;
     }
 
-    public Date getCreate_time() {
-        return create_time;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate_time(Date create_time) {
-        this.create_time = create_time;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdate_time() {
-        return update_time;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate_time(Date update_time) {
-        this.update_time = update_time;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

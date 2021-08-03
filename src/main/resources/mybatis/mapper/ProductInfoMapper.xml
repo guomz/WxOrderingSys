@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.guomz.orderingsys.dao.ProductInfoMapper">
   <resultMap id="BaseResultMap" type="com.guomz.orderingsys.entity.ProductInfo">
-    <id column="product_id" jdbcType="VARCHAR" property="product_id" />
-    <result column="product_name" jdbcType="VARCHAR" property="product_name" />
-    <result column="product_price" jdbcType="DECIMAL" property="product_price" />
-    <result column="product_stock" jdbcType="INTEGER" property="product_stock" />
-    <result column="product_description" jdbcType="VARCHAR" property="product_description" />
-    <result column="product_icon" jdbcType="VARCHAR" property="product_icon" />
-    <result column="product_category_type" jdbcType="INTEGER" property="product_category_type" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+    <id column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="product_stock" jdbcType="INTEGER" property="productStock" />
+    <result column="product_description" jdbcType="VARCHAR" property="productDescription" />
+    <result column="product_icon" jdbcType="VARCHAR" property="productIcon" />
+    <result column="product_category_type" jdbcType="INTEGER" property="productCategoryType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     product_id, product_name, product_price, product_stock, product_description, product_icon, 
@@ -20,123 +20,140 @@
     select 
     <include refid="Base_Column_List" />
     from product_info
-    where product_id = #{product_id,jdbcType=VARCHAR}
+    where product_id = #{productId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from product_info
-    where product_id = #{product_id,jdbcType=VARCHAR}
+    where product_id = #{productId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.guomz.orderingsys.entity.ProductInfo">
     insert into product_info (product_id, product_name, product_price, 
       product_stock, product_description, product_icon, 
       product_category_type, create_time, update_time
       )
-    values (#{product_id,jdbcType=VARCHAR}, #{product_name,jdbcType=VARCHAR}, #{product_price,jdbcType=DECIMAL}, 
-      #{product_stock,jdbcType=INTEGER}, #{product_description,jdbcType=VARCHAR}, #{product_icon,jdbcType=VARCHAR}, 
-      #{product_category_type,jdbcType=INTEGER}, #{create_time,jdbcType=TIMESTAMP}, #{update_time,jdbcType=TIMESTAMP}
+    values (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL}, 
+      #{productStock,jdbcType=INTEGER}, #{productDescription,jdbcType=VARCHAR}, #{productIcon,jdbcType=VARCHAR}, 
+      #{productCategoryType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.guomz.orderingsys.entity.ProductInfo">
     insert into product_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="product_id != null">
+      <if test="productId != null">
         product_id,
       </if>
-      <if test="product_name != null">
+      <if test="productName != null">
         product_name,
       </if>
-      <if test="product_price != null">
+      <if test="productPrice != null">
         product_price,
       </if>
-      <if test="product_stock != null">
+      <if test="productStock != null">
         product_stock,
       </if>
-      <if test="product_description != null">
+      <if test="productDescription != null">
         product_description,
       </if>
-      <if test="product_icon != null">
+      <if test="productIcon != null">
         product_icon,
       </if>
-      <if test="product_category_type != null">
+      <if test="productCategoryType != null">
         product_category_type,
       </if>
-      <if test="create_time != null">
+      <if test="createTime != null">
         create_time,
       </if>
-      <if test="update_time != null">
+      <if test="updateTime != null">
         update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="product_id != null">
-        #{product_id,jdbcType=VARCHAR},
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
       </if>
-      <if test="product_name != null">
-        #{product_name,jdbcType=VARCHAR},
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
       </if>
-      <if test="product_price != null">
-        #{product_price,jdbcType=DECIMAL},
+      <if test="productPrice != null">
+        #{productPrice,jdbcType=DECIMAL},
       </if>
-      <if test="product_stock != null">
-        #{product_stock,jdbcType=INTEGER},
+      <if test="productStock != null">
+        #{productStock,jdbcType=INTEGER},
       </if>
-      <if test="product_description != null">
-        #{product_description,jdbcType=VARCHAR},
+      <if test="productDescription != null">
+        #{productDescription,jdbcType=VARCHAR},
       </if>
-      <if test="product_icon != null">
-        #{product_icon,jdbcType=VARCHAR},
+      <if test="productIcon != null">
+        #{productIcon,jdbcType=VARCHAR},
       </if>
-      <if test="product_category_type != null">
-        #{product_category_type,jdbcType=INTEGER},
+      <if test="productCategoryType != null">
+        #{productCategoryType,jdbcType=INTEGER},
       </if>
-      <if test="create_time != null">
-        #{create_time,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="update_time != null">
-        #{update_time,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.guomz.orderingsys.entity.ProductInfo">
     update product_info
     <set>
-      <if test="product_name != null">
-        product_name = #{product_name,jdbcType=VARCHAR},
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
       </if>
-      <if test="product_price != null">
-        product_price = #{product_price,jdbcType=DECIMAL},
+      <if test="productPrice != null">
+        product_price = #{productPrice,jdbcType=DECIMAL},
       </if>
-      <if test="product_stock != null">
-        product_stock = #{product_stock,jdbcType=INTEGER},
+      <if test="productStock != null">
+        product_stock = #{productStock,jdbcType=INTEGER},
       </if>
-      <if test="product_description != null">
-        product_description = #{product_description,jdbcType=VARCHAR},
+      <if test="productDescription != null">
+        product_description = #{productDescription,jdbcType=VARCHAR},
       </if>
-      <if test="product_icon != null">
-        product_icon = #{product_icon,jdbcType=VARCHAR},
+      <if test="productIcon != null">
+        product_icon = #{productIcon,jdbcType=VARCHAR},
       </if>
-      <if test="product_category_type != null">
-        product_category_type = #{product_category_type,jdbcType=INTEGER},
+      <if test="productCategoryType != null">
+        product_category_type = #{productCategoryType,jdbcType=INTEGER},
       </if>
-      <if test="create_time != null">
-        create_time = #{create_time,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="update_time != null">
-        update_time = #{update_time,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where product_id = #{product_id,jdbcType=VARCHAR}
+    where product_id = #{productId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.guomz.orderingsys.entity.ProductInfo">
     update product_info
-    set product_name = #{product_name,jdbcType=VARCHAR},
-      product_price = #{product_price,jdbcType=DECIMAL},
-      product_stock = #{product_stock,jdbcType=INTEGER},
-      product_description = #{product_description,jdbcType=VARCHAR},
-      product_icon = #{product_icon,jdbcType=VARCHAR},
-      product_category_type = #{product_category_type,jdbcType=INTEGER},
-      create_time = #{create_time,jdbcType=TIMESTAMP},
-      update_time = #{update_time,jdbcType=TIMESTAMP}
-    where product_id = #{product_id,jdbcType=VARCHAR}
+    set product_name = #{productName,jdbcType=VARCHAR},
+      product_price = #{productPrice,jdbcType=DECIMAL},
+      product_stock = #{productStock,jdbcType=INTEGER},
+      product_description = #{productDescription,jdbcType=VARCHAR},
+      product_icon = #{productIcon,jdbcType=VARCHAR},
+      product_category_type = #{productCategoryType,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where product_id = #{productId,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectByCondition" parameterType="com.guomz.orderingsys.domain.ProductInfoCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_info
+    <where>
+      <if test="productName != null">
+        and product_name like "%"#{productName}"%"
+      </if>
+      <if test="productCategoryType != null">
+        and product_category_type=#{productCategoryType}
+      </if>
+      <if test="productId != null">
+        and product_id = #{productId}
+      </if>
+    </where>
+  </select>
 </mapper>
