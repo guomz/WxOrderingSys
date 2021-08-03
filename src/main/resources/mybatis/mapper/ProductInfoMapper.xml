@@ -171,4 +171,16 @@
       </if>
     </where>
   </select>
+
+  <select id="selectByIdList" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_info
+    <where>
+      product_id in
+      <foreach collection="list" open="(" close=")" index="index" item="item" separator=",">
+        #{item}
+      </foreach>
+    </where>
+  </select>
 </mapper>

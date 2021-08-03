@@ -10,6 +10,8 @@ import com.guomz.orderingsys.domain.condition.ProductInfoCondition;
 import com.guomz.orderingsys.domain.resp.PageResponse;
 import com.guomz.orderingsys.entity.ProductCategory;
 import com.guomz.orderingsys.entity.ProductInfo;
+import com.guomz.orderingsys.enums.ProductStatusEnum;
+import com.guomz.orderingsys.util.KeyUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -40,13 +42,14 @@ public class DaoTest {
     @Test
     public void testProductInfoDao(){
         ProductInfo productInfo = new ProductInfo();
-        productInfo.setProductId("123");
-        productInfo.setProductName("薯片");
-        productInfo.setProductPrice(new BigDecimal("3"));
+        productInfo.setProductId(KeyUtil.generateKey());
+        productInfo.setProductName("汉堡");
+        productInfo.setProductPrice(new BigDecimal("5"));
         productInfo.setProductStock(10);
-        productInfo.setProductDescription("哈哈");
+        productInfo.setProductDescription("哈啊哈");
         productInfo.setProductIcon("aaa");
-        productInfo.setProductCategoryType(1);
+        productInfo.setProductStatus(ProductStatusEnum.ON_SALE.getCode());
+        productInfo.setProductCategoryType(2);
         productInfo.setCreateTime(new Date());
         productInfo.setUpdateTime(new Date());
 

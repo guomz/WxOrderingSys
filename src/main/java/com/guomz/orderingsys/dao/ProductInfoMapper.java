@@ -20,4 +20,6 @@ public interface ProductInfoMapper {
     int updateByPrimaryKey(ProductInfo record);
 
     List<ProductInfo> selectByCondition(ProductInfoCondition condition);
+
+    List<ProductInfo> selectByIdList(List<String> idList);
 }
