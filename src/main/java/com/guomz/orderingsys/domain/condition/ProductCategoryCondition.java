@@ -1,4 +1,4 @@
-package com.guomz.orderingsys.domain;
+package com.guomz.orderingsys.domain.condition;
 
 import lombok.Data;
 

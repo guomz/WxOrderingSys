@@ -22,4 +22,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public ProductCategory getCategoryByType(Integer categoryType) {
         return null;
     }
+
+    @Override
+    public void addCategory(ProductCategory productCategory) {
+        productCategoryMapper.insert(productCategory);
+    }
 }

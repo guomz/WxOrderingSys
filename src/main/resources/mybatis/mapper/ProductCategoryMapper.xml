@@ -91,7 +91,7 @@
     where category_id = #{categoryId,jdbcType=BIGINT}
   </update>
 
-  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="com.guomz.orderingsys.domain.ProductCategoryCondition">
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="com.guomz.orderingsys.domain.condition.ProductCategoryCondition">
     select
     <include refid="Base_Column_List" />
     from product_category

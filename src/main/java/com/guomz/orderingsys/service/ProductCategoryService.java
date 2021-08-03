@@ -8,4 +8,5 @@ public interface ProductCategoryService {
 
     ProductCategory getCategoryByType(Integer categoryType);
 
+    void addCategory(ProductCategory productCategory);
 }

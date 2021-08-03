@@ -140,7 +140,7 @@
     where product_id = #{productId,jdbcType=VARCHAR}
   </update>
 
-  <select id="selectByCondition" parameterType="com.guomz.orderingsys.domain.ProductInfoCondition" resultMap="BaseResultMap">
+  <select id="selectByCondition" parameterType="com.guomz.orderingsys.domain.condition.ProductInfoCondition" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from product_info

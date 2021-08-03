@@ -1,8 +1,10 @@
 package com.guomz.orderingsys.entity;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
+@Data
 public class ProductInfo {
     private String productId;
 
