@@ -1,7 +1,10 @@
 package com.guomz.orderingsys.dao;
 
 import com.guomz.orderingsys.entity.OrderMaster;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface OrderMasterMapper {
@@ -16,4 +19,6 @@ public interface OrderMasterMapper {
     int updateByPrimaryKeySelective(OrderMaster record);
 
     int updateByPrimaryKey(OrderMaster record);
+
+    List<OrderMaster> selectOrderByOpenId(@Param("openid") String openid);
 }

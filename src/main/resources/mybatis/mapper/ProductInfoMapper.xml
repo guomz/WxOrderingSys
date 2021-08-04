@@ -5,7 +5,7 @@
     <id column="product_id" jdbcType="VARCHAR" property="productId" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
-    <result column="product_stock" jdbcType="INTEGER" property="productStock" />
+    <result column="product_stock" jdbcType="DECIMAL" property="productStock" />
     <result column="product_description" jdbcType="VARCHAR" property="productDescription" />
     <result column="product_icon" jdbcType="VARCHAR" property="productIcon" />
     <result column="product_category_type" jdbcType="INTEGER" property="productCategoryType" />
@@ -33,7 +33,7 @@
       product_category_type, create_time, update_time,product_status
       )
     values (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL}, 
-      #{productStock,jdbcType=INTEGER}, #{productDescription,jdbcType=VARCHAR}, #{productIcon,jdbcType=VARCHAR}, 
+      #{productStock,jdbcType=DECIMAL}, #{productDescription,jdbcType=VARCHAR}, #{productIcon,jdbcType=VARCHAR},
       #{productCategoryType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
             #{productStatus}
       )
@@ -83,7 +83,7 @@
         #{productPrice,jdbcType=DECIMAL},
       </if>
       <if test="productStock != null">
-        #{productStock,jdbcType=INTEGER},
+        #{productStock,jdbcType=DECIMAL},
       </if>
       <if test="productDescription != null">
         #{productDescription,jdbcType=VARCHAR},
@@ -115,7 +115,7 @@
         product_price = #{productPrice,jdbcType=DECIMAL},
       </if>
       <if test="productStock != null">
-        product_stock = #{productStock,jdbcType=INTEGER},
+        product_stock = #{productStock,jdbcType=DECIMAL},
       </if>
       <if test="productDescription != null">
         product_description = #{productDescription,jdbcType=VARCHAR},
@@ -142,7 +142,7 @@
     update product_info
     set product_name = #{productName,jdbcType=VARCHAR},
       product_price = #{productPrice,jdbcType=DECIMAL},
-      product_stock = #{productStock,jdbcType=INTEGER},
+      product_stock = #{productStock,jdbcType=DECIMAL},
       product_description = #{productDescription,jdbcType=VARCHAR},
       product_icon = #{productIcon,jdbcType=VARCHAR},
       product_category_type = #{productCategoryType,jdbcType=INTEGER},
@@ -183,4 +183,15 @@
       </foreach>
     </where>
   </select>
+
+  <update id="changeProductStockByList" parameterType="java.util.List">
+    <foreach collection="list" index="index" item="item" separator=";">
+      update product_info
+      <set>
+        product_stock = product_stock + #{item.changedStock}
+      </set>
+      where
+      product_id=#{item.productId}
+    </foreach>
+  </update>
 </mapper>

@@ -139,4 +139,27 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where order_detail_id = #{orderDetailId,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectDetailByOrderId" parameterType="string" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_detail
+    <where>
+      order_id = #{orderId}
+    </where>
+  </select>
+
+  <insert id="insertOrderDetailList" parameterType="java.util.List">
+    insert into order_detail (order_detail_id, order_id, product_id,
+                              product_name, product_price, product_quantity,
+                              product_icon, create_time, update_time
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.orderDetailId,jdbcType=VARCHAR}, #{item.orderId,jdbcType=VARCHAR}, #{item.productId,jdbcType=VARCHAR},
+      #{item.productName,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, #{item.productQuantity,jdbcType=DECIMAL},
+      #{item.productIcon,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
 </mapper>

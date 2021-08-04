@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PayStatusEnum {
 
-    UNPAID(0, "未支付");
+    UNPAID(0, "未支付"),
+    PAID(1, "已支付");
 
     private Integer code;
     private String message;

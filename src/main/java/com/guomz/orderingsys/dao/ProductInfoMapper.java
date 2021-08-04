@@ -1,6 +1,7 @@
 package com.guomz.orderingsys.dao;
 
 import com.guomz.orderingsys.domain.condition.ProductInfoCondition;
+import com.guomz.orderingsys.domain.condition.ProductStockChangeCondition;
 import com.guomz.orderingsys.entity.ProductInfo;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +23,6 @@ public interface ProductInfoMapper {
     List<ProductInfo> selectByCondition(ProductInfoCondition condition);
 
     List<ProductInfo> selectByIdList(List<String> idList);
+
+    int changeProductStockByList(List<ProductStockChangeCondition> conditionList);
 }

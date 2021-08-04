@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 @Data
 public class CartDto {
+    private String orderDetailId;
+    private String orderId;
     private String productId;
 
     private String productName;

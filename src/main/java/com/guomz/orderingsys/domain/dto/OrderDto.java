@@ -7,6 +7,8 @@ import java.util.List;
 
 @Data
 public class OrderDto {
+    private String orderId;
+
     private String buyerName;
 
     private String buyerPhone;
@@ -16,6 +18,10 @@ public class OrderDto {
     private String buyerOpenid;
 
     private BigDecimal orderAmount;
+
+    private Integer orderStatus;
+
+    private Integer payStatus;
 
     List<CartDto> cartList;
 }

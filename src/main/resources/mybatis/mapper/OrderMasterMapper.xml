@@ -150,4 +150,13 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where order_id = #{orderId,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectOrderByOpenId" resultMap="BaseResultMap" parameterType="string">
+    select
+    <include refid="Base_Column_List" />
+    from order_master
+    <where>
+      buyer_openid=#{openid}
+    </where>
+  </select>
 </mapper>
