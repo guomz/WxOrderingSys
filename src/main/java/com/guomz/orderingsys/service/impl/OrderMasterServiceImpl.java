@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,18 +50,30 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         List<ProductInfo> productInfoList = productInfoMapper.selectByIdList(productIdList);
         checkOrderProduct(orderDto, productInfoList);
         //计算总金额并比较
-        BigDecimal totalAmount = orderDto.getCartList().stream().map(item -> item.getProductPrice().multiply(item.getProductQuantity())).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalAmount = orderDto.getCartList().stream()
+                .map(item -> item.getProductPrice().multiply(item.getProductQuantity())).reduce(BigDecimal.ZERO, BigDecimal::add);
         if (totalAmount.compareTo(orderDto.getOrderAmount()) != 0){
             log.error("订单金额不正确");
             throw new BusinessException(ResponseEnum.ORDER_PRICE_NOT_CORRECT);
         }
         //生成订单与订单明细
-        OrderMaster orderMaster = new OrderMaster();
-        BeanUtils.copyProperties(orderDto, orderMaster);
-        orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
-        orderMaster.setPayStatus(PayStatusEnum.UNPAID.getCode());
-        orderMaster.setOrderId(KeyUtil.generateKey());
-        orderMaster.setOrderAmount(totalAmount);
+        OrderMaster orderMaster = generateOrderMaster(orderDto, totalAmount);
+        List<OrderDetail> orderDetailList = generateOrderDetailList(orderDto, orderMaster);
+        //插入数据
+        orderMasterMapper.insert(orderMaster);
+        orderDetailMapper.insertOrderDetailList(orderDetailList);
+        //扣减库存
+
+        return orderDto;
+    }
+
+    /**
+     * 生成一批订单明细
+     * @param orderDto
+     * @param orderMaster
+     * @return
+     */
+    private List<OrderDetail> generateOrderDetailList(OrderDto orderDto, OrderMaster orderMaster) {
         List<OrderDetail> orderDetailList = orderDto.getCartList().stream()
                 .map(item -> {
                     OrderDetail orderDetail = new OrderDetail();
@@ -69,12 +82,25 @@ public class OrderMasterServiceImpl implements OrderMasterService {
                     orderDetail.setOrderId(orderMaster.getOrderId());
                     return orderDetail;
                 }).collect(Collectors.toList());
-        //插入数据
-        orderMasterMapper.insert(orderMaster);
-        orderDetailMapper.insertOrderDetailList(orderDetailList);
-        //扣减库存
+        return orderDetailList;
+    }
 
-        return orderDto;
+    /**
+     * 生成主订单
+     * @param orderDto
+     * @param totalAmount
+     * @return
+     */
+    private OrderMaster generateOrderMaster(OrderDto orderDto, BigDecimal totalAmount) {
+        OrderMaster orderMaster = new OrderMaster();
+        BeanUtils.copyProperties(orderDto, orderMaster);
+        orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
+        orderMaster.setPayStatus(PayStatusEnum.UNPAID.getCode());
+        orderMaster.setOrderId(KeyUtil.generateKey());
+        orderMaster.setOrderAmount(totalAmount);
+        orderMaster.setCreateTime(new Date());
+        orderMaster.setUpdateTime(new Date());
+        return orderMaster;
     }
 
     @Override
@@ -85,7 +111,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
             log.error("订单明细不存在");
             throw new BusinessException(ResponseEnum.ORDER_DETAIL_NOT_EXIST);
         }
-
+        //封装dto
         OrderDto orderDto = new OrderDto();
         BeanUtils.copyProperties(orderMaster, orderDto);
         List<CartDto> cartDtoList = orderDetailList.stream()
@@ -104,7 +130,18 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         PageHelper.startPage(pageNum, pageSize);
         List<OrderMaster> orderMasterList = orderMasterMapper.selectOrderByOpenId(openid);
         PageInfo pageInfo = new PageInfo(orderMasterList);
+        //封装dto
+        List<OrderDto> orderDtoList = generateOrderDtoList(orderMasterList);
+        pageInfo.setList(orderDtoList);
+        return pageInfo;
+    }
 
+    /**
+     * 生成一组orderdto
+     * @param orderMasterList
+     * @return
+     */
+    private List<OrderDto> generateOrderDtoList(List<OrderMaster> orderMasterList) {
         List<OrderDto> orderDtoList = orderMasterList.stream()
                 .map(item -> {
                     OrderDto orderDto = new OrderDto();
@@ -112,18 +149,17 @@ public class OrderMasterServiceImpl implements OrderMasterService {
                     return orderDto;
                 }).collect(Collectors.toList());
 
-        orderDtoList.forEach(item -> {
-            List<OrderDetail> orderDetailList = orderDetailMapper.selectDetailByOrderId(item.getOrderId());
+        for (OrderDto orderDto : orderDtoList) {
+            List<OrderDetail> orderDetailList = orderDetailMapper.selectDetailByOrderId(orderDto.getOrderId());
             List<CartDto> cartDtoList = orderDetailList.stream()
                     .map(orderDetailItem -> {
                         CartDto cartDto = new CartDto();
                         BeanUtils.copyProperties(orderDetailItem, cartDto);
                         return cartDto;
                     }).collect(Collectors.toList());
-            item.setCartList(cartDtoList);
-        });
-        pageInfo.setList(orderDtoList);
-        return pageInfo;
+            orderDto.setCartList(cartDtoList);
+        }
+        return orderDtoList;
     }
 
     @Override
@@ -136,7 +172,25 @@ public class OrderMasterServiceImpl implements OrderMasterService {
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
         //判断订单明细
-        orderDto.getCartList().forEach(cartDto -> {
+        checkCartDtoList(orderDto);
+        //修改订单状态
+        orderMaster.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+        orderDto.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+        orderMaster.setUpdateTime(new Date());
+        orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
+        //增加库存
+        productInfoService.resumeStock(orderDto.getCartList());
+        //如果订单已支付需要退款
+
+        return orderDto;
+    }
+
+    /**
+     * 检查订单明细的商品信息
+     * @param orderDto
+     */
+    private void checkCartDtoList(OrderDto orderDto) {
+        for (CartDto cartDto : orderDto.getCartList()) {
             OrderDetail orderDetail = orderDetailMapper.selectByPrimaryKey(cartDto.getOrderDetailId());
             if (orderDetail == null){
                 log.error("订单明细不存在,{}", orderDetail.getOrderDetailId());
@@ -147,16 +201,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
                 log.error("订单中商品信息不正确,{}", orderDetail.getOrderDetailId());
                 throw new BusinessException(ResponseEnum.ORDER_DETAIL_PRODUCT_INFO_NOT_CORRECT);
             }
-        });
-        //修改订单状态
-        orderMaster.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
-        orderDto.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
-        orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
-        //增加库存
-        productInfoService.resumeStock(orderDto.getCartList());
-        //如果订单已支付需要退款
-
-        return orderDto;
+        }
     }
 
     @Override
@@ -164,21 +209,43 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     public OrderDto finishOrder(OrderDto orderDto) {
         //找到订单数据
         OrderMaster orderMaster = getOrderMasterNotNull(orderDto.getOrderId());
-        //修改订单状态
-        if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW)){
+        //判断并修改订单状态
+        if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
             log.error("订单状态不正确");
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
+        if (!orderMaster.getPayStatus().equals(PayStatusEnum.PAID.getCode())){
+            log.error("订单支付状态错误，{}", orderDto.getOrderId());
+            throw new BusinessException(ResponseEnum.ORDER_PAY_STATUS_NOT_CORRECT);
+        }
         orderMaster.setOrderStatus(OrderStatusEnum.FINISH.getCode());
         orderDto.setOrderStatus(OrderStatusEnum.FINISH.getCode());
+        orderMaster.setUpdateTime(new Date());
         orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
 
         return orderDto;
     }
 
     @Override
+    @Transactional
     public OrderDto payOrder(OrderDto orderDto) {
-        return null;
+        //查找订单
+        OrderMaster orderMaster = getOrderMasterNotNull(orderDto.getOrderId());
+        //判断状态
+        if (orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
+            log.error("订单状态错误，{}", orderDto.getOrderId());
+            throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
+        }
+        if (!orderMaster.getPayStatus().equals(PayStatusEnum.UNPAID.getCode())){
+            log.error("订单支付状态错误，{}", orderDto.getOrderId());
+            throw new BusinessException(ResponseEnum.ORDER_PAY_STATUS_NOT_CORRECT);
+        }
+        //修改状态
+        orderMaster.setPayStatus(PayStatusEnum.PAID.getCode());
+        orderDto.setPayStatus(PayStatusEnum.PAID.getCode());
+        orderMaster.setUpdateTime(new Date());
+        orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
+        return orderDto;
     }
 
     /**
