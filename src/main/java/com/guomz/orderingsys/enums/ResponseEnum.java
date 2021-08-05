@@ -15,6 +15,7 @@ public enum ResponseEnum {
     ORDER_STATUS_NOT_CORRECT("006","订单状态不正确"),
     ORDER_DETAIL_PRODUCT_INFO_NOT_CORRECT("007","订单明细商品信息不正确"),
     ORDER_PAY_STATUS_NOT_CORRECT("008","订单支付状态不正确"),
+    ORDER_OPENID_NOT_CORRECT("009","订单openid不正确"),
     INVALID_ARGS("999","参数格式不正确"),
     UNKNOW_ERROR("1000", "系统异常");
 

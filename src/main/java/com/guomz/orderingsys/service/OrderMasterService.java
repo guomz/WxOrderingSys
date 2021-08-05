@@ -2,21 +2,19 @@ package com.guomz.orderingsys.service;
 
 import com.github.pagehelper.PageInfo;
 import com.guomz.orderingsys.domain.dto.OrderDto;
-import com.guomz.orderingsys.entity.OrderMaster;
 
 public interface OrderMasterService {
 
-    OrderDto createOrder(OrderDto orderDto);
+    String createOrder(OrderDto orderDto);
 
-    OrderDto getOrderById(String orderId);
+    OrderDto getOrderByIdCheck(String orderId, String openid);
 
     PageInfo<OrderDto> getOrderListByOpenId(Integer pageNum, Integer pageSize, String openid);
 
-    OrderDto cancelOrder(OrderDto orderDto);
+    void cancelOrder(String orderId, String openid);
 
-    OrderDto finishOrder(OrderDto orderDto);
+    void finishOrder(String orderId, String openid);
 
-    OrderDto payOrder(OrderDto orderDto);
+    void payOrder(String orderId, String openid);
 
-    OrderMaster getOrderMasterNotNull(String orderId);
 }

@@ -3,7 +3,7 @@ package com.guomz.orderingsys.service.impl;
 import com.guomz.orderingsys.dao.ProductInfoMapper;
 import com.guomz.orderingsys.domain.condition.ProductInfoCondition;
 import com.guomz.orderingsys.domain.condition.ProductStockChangeCondition;
-import com.guomz.orderingsys.domain.dto.CartDto;
+import com.guomz.orderingsys.entity.OrderDetail;
 import com.guomz.orderingsys.entity.ProductInfo;
 import com.guomz.orderingsys.enums.ProductStatusEnum;
 import com.guomz.orderingsys.enums.ResponseEnum;
@@ -32,14 +32,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public void resumeStock(List<CartDto> cartDtoList) {
+    public void resumeStock(List<OrderDetail> orderDetailList) {
         //检查商品并组合库存变化信息
-        List<ProductStockChangeCondition> conditionList = cartDtoList.stream()
-                .map(cartDto -> {
-                    ProductInfo productInfo = getProductInfoNotNull(cartDto.getProductId());
+        List<ProductStockChangeCondition> conditionList = orderDetailList.stream()
+                .map(orderDetail -> {
                     ProductStockChangeCondition condition = new ProductStockChangeCondition();
-                    condition.setProductId(productInfo.getProductId());
-                    condition.setChangedStock(cartDto.getProductQuantity());
+                    condition.setProductId(orderDetail.getProductId());
+                    condition.setChangedStock(orderDetail.getProductQuantity());
                     return condition;
                 }).collect(Collectors.toList());
 

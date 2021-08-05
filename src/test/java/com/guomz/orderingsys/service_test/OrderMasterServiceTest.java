@@ -39,7 +39,7 @@ public class OrderMasterServiceTest {
 
     @Test
     public void testFindByOrderId(){
-        System.out.println(orderMasterService.getOrderById("1628041097587"));
+       // System.out.println(orderMasterService.getOrderById("1628041097587"));
     }
 
     @Test
@@ -66,6 +66,5 @@ public class OrderMasterServiceTest {
         cartDto.setProductQuantity(new BigDecimal("2"));
 
         orderDto.setCartList(Arrays.asList(cartDto));
-        System.out.println(orderMasterService.cancelOrder(orderDto));
     }
 }

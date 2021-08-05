@@ -1,6 +1,6 @@
 package com.guomz.orderingsys.service;
 
-import com.guomz.orderingsys.domain.dto.CartDto;
+import com.guomz.orderingsys.entity.OrderDetail;
 import com.guomz.orderingsys.entity.ProductInfo;
 
 import java.util.List;
@@ -15,9 +15,9 @@ public interface ProductInfoService {
 
     /**
      * 恢复商品库存
-     * @param cartDtoList
+     * @param orderDetailList
      */
-    void resumeStock(List<CartDto> cartDtoList);
+    void resumeStock(List<OrderDetail> orderDetailList);
 
     ProductInfo getProductInfoNotNull(String productId);
 }

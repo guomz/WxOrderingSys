@@ -46,7 +46,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
 
     @Override
     @Transactional
-    public OrderDto createOrder(OrderDto orderDto) {
+    public String createOrder(OrderDto orderDto) {
         //找出对应商品对比购物车信息
         List<String> productIdList = orderDto.getCartList().stream().map(CartDto::getProductId).distinct().collect(Collectors.toList());
         Map<String, ProductInfo> productInfoMap = productInfoMapper.selectByIdList(productIdList).stream()
@@ -67,7 +67,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         orderDetailMapper.insertOrderDetailList(orderDetailList);
         //扣减库存
 
-        return orderDto;
+        return orderMaster.getOrderId();
     }
 
     /**
@@ -115,8 +115,12 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         return orderMaster;
     }
 
-    @Override
-    public OrderDto getOrderById(String orderId) {
+    /**
+     * 获取订单dto
+     * @param orderId
+     * @return
+     */
+    private OrderDto getOrderById(String orderId) {
         OrderMaster orderMaster = getOrderMasterNotNull(orderId);
         List<OrderDetail> orderDetailList = orderDetailMapper.selectDetailByOrderId(orderId);
         if (orderDetailList.isEmpty()){
@@ -134,6 +138,16 @@ public class OrderMasterServiceImpl implements OrderMasterService {
                 }).collect(Collectors.toList());
 
         orderDto.setCartList(cartDtoList);
+        return orderDto;
+    }
+
+    @Override
+    public OrderDto getOrderByIdCheck(String orderId, String openid) {
+        OrderDto orderDto = getOrderById(orderId);
+        if (!orderDto.getBuyerOpenid().equals(openid)){
+            log.error("订单openid不正确,{}",orderId);
+            throw new BusinessException(ResponseEnum.ORDER_OPENID_NOT_CORRECT);
+        }
         return orderDto;
     }
 
@@ -176,25 +190,23 @@ public class OrderMasterServiceImpl implements OrderMasterService {
 
     @Override
     @Transactional
-    public OrderDto cancelOrder(OrderDto orderDto) {
-        OrderMaster orderMaster = getOrderMasterNotNull(orderDto.getOrderId());
+    public void cancelOrder(String orderId, String openid) {
+        OrderMaster orderMaster = getOrderMasterWithIdCheck(orderId, openid);
         //判断订单状态
         if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
             log.error("订单状态不正确,{}", orderMaster.getOrderId());
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
-        //判断订单明细
-        checkCartDtoList(orderDto);
+        //获取订单明细
+        List<OrderDetail> orderDetailList = getOrderDetailListByOrderId(orderId);
         //修改订单状态
         orderMaster.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
-        orderDto.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
         orderMaster.setUpdateTime(new Date());
         orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
         //增加库存
-        productInfoService.resumeStock(orderDto.getCartList());
+        productInfoService.resumeStock(orderDetailList);
         //如果订单已支付需要退款
 
-        return orderDto;
     }
 
     /**
@@ -218,46 +230,42 @@ public class OrderMasterServiceImpl implements OrderMasterService {
 
     @Override
     @Transactional
-    public OrderDto finishOrder(OrderDto orderDto) {
+    public void finishOrder(String orderId, String openid) {
         //找到订单数据
-        OrderMaster orderMaster = getOrderMasterNotNull(orderDto.getOrderId());
+        OrderMaster orderMaster = getOrderMasterWithIdCheck(orderId, openid);
         //判断并修改订单状态
         if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
-            log.error("订单状态不正确");
+            log.error("订单状态不正确,{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
         if (!orderMaster.getPayStatus().equals(PayStatusEnum.PAID.getCode())){
-            log.error("订单支付状态错误，{}", orderDto.getOrderId());
+            log.error("订单支付状态错误,{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_PAY_STATUS_NOT_CORRECT);
         }
         orderMaster.setOrderStatus(OrderStatusEnum.FINISH.getCode());
-        orderDto.setOrderStatus(OrderStatusEnum.FINISH.getCode());
         orderMaster.setUpdateTime(new Date());
         orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
 
-        return orderDto;
     }
 
     @Override
     @Transactional
-    public OrderDto payOrder(OrderDto orderDto) {
+    public void payOrder(String orderId, String openid) {
         //查找订单
-        OrderMaster orderMaster = getOrderMasterNotNull(orderDto.getOrderId());
+        OrderMaster orderMaster = getOrderMasterWithIdCheck(orderId, openid);
         //判断状态
         if (orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
-            log.error("订单状态错误，{}", orderDto.getOrderId());
+            log.error("订单状态错误，{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
         if (!orderMaster.getPayStatus().equals(PayStatusEnum.UNPAID.getCode())){
-            log.error("订单支付状态错误，{}", orderDto.getOrderId());
+            log.error("订单支付状态错误，{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_PAY_STATUS_NOT_CORRECT);
         }
         //修改状态
         orderMaster.setPayStatus(PayStatusEnum.PAID.getCode());
-        orderDto.setPayStatus(PayStatusEnum.PAID.getCode());
         orderMaster.setUpdateTime(new Date());
         orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
-        return orderDto;
     }
 
     /**
@@ -279,13 +287,46 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         }
     }
 
-    @Override
-    public OrderMaster getOrderMasterNotNull(String orderId){
+    /**
+     * 获取订单实体非空
+     * @param orderId
+     * @return
+     */
+    OrderMaster getOrderMasterNotNull(String orderId){
         OrderMaster orderMaster = orderMasterMapper.selectByPrimaryKey(orderId);
         if (orderMaster == null){
             log.error("订单不存在"  );
             throw new BusinessException(ResponseEnum.ORDER_NOT_EXIST);
         }
         return orderMaster;
+    }
+
+    /**
+     * 获取订单实体id校验
+     * @param orderId
+     * @param openid
+     * @return
+     */
+    OrderMaster getOrderMasterWithIdCheck(String orderId, String openid){
+        OrderMaster orderMaster = getOrderMasterNotNull(orderId);
+        if (!orderMaster.getBuyerOpenid().equals(openid)){
+            log.error("订单openid不正确,{}",orderId);
+            throw new BusinessException(ResponseEnum.ORDER_OPENID_NOT_CORRECT);
+        }
+        return orderMaster;
+    }
+
+    /**
+     * 获取订单明细非空
+     * @param orderId
+     * @return
+     */
+    List<OrderDetail> getOrderDetailListByOrderId(String orderId){
+        List<OrderDetail> orderDetailList = orderDetailMapper.selectDetailByOrderId(orderId);
+        if (orderDetailList.isEmpty()){
+            log.error("订单明细不存在,{}", orderId);
+            throw new BusinessException(ResponseEnum.ORDER_DETAIL_NOT_EXIST);
+        }
+        return orderDetailList;
     }
 }
