@@ -62,7 +62,7 @@ public class BuyerOrderController {
      */
     @ApiOperation("创建订单")
     @PostMapping("/createorder")
-    public BusinessResponse<OrderDto> createOrder(@Validated(CreateOrder.class) OrderDto orderDto){
+    public BusinessResponse<OrderDto> createOrder(@Validated(CreateOrder.class) @RequestBody OrderDto orderDto){
 
         orderDto = orderMasterService.createOrder(orderDto);
         return new BusinessResponse<>(ResponseEnum.OK, orderDto);
@@ -70,21 +70,21 @@ public class BuyerOrderController {
 
     @ApiOperation("取消订单")
     @PostMapping("/cancelorder")
-    public BusinessResponse<OrderDto> cancelOrder(@Validated(CancelOrder.class) OrderDto orderDto){
+    public BusinessResponse<OrderDto> cancelOrder(@Validated(CancelOrder.class) @RequestBody OrderDto orderDto){
         orderDto = orderMasterService.cancelOrder(orderDto);
         return new BusinessResponse<>(ResponseEnum.OK, orderDto);
     }
 
     @ApiOperation("完成订单")
     @PostMapping("/finishorder")
-    public BusinessResponse<OrderDto> finishOrder(@Validated(FinishOrder.class) OrderDto orderDto){
+    public BusinessResponse<OrderDto> finishOrder(@Validated(FinishOrder.class) @RequestBody OrderDto orderDto){
         orderDto = orderMasterService.finishOrder(orderDto);
         return new BusinessResponse<>(ResponseEnum.OK, orderDto);
     }
 
     @ApiOperation("支付订单")
     @PostMapping("/payorder")
-    public BusinessResponse<OrderDto> payOrder(@Validated(PayOrder.class) OrderDto orderDto){
+    public BusinessResponse<OrderDto> payOrder(@Validated(PayOrder.class) @RequestBody OrderDto orderDto){
         orderDto = orderMasterService.payOrder(orderDto);
         return new BusinessResponse<>(ResponseEnum.OK, orderDto);
     }
