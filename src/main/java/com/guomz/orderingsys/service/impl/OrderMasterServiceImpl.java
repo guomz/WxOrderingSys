@@ -27,6 +27,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +49,9 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     public OrderDto createOrder(OrderDto orderDto) {
         //找出对应商品对比购物车信息
         List<String> productIdList = orderDto.getCartList().stream().map(CartDto::getProductId).distinct().collect(Collectors.toList());
-        List<ProductInfo> productInfoList = productInfoMapper.selectByIdList(productIdList);
-        checkOrderProduct(orderDto, productInfoList);
+        Map<String, ProductInfo> productInfoMap = productInfoMapper.selectByIdList(productIdList).stream()
+                .collect(Collectors.toMap(ProductInfo::getProductId, Function.identity(), (k1,k2)->k2));
+        checkOrderProduct(orderDto, productInfoMap);
         //计算总金额并比较
         BigDecimal totalAmount = orderDto.getCartList().stream()
                 .map(item -> item.getProductPrice().multiply(item.getProductQuantity())).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -58,7 +61,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         }
         //生成订单与订单明细
         OrderMaster orderMaster = generateOrderMaster(orderDto, totalAmount);
-        List<OrderDetail> orderDetailList = generateOrderDetailList(orderDto, orderMaster);
+        List<OrderDetail> orderDetailList = generateOrderDetailList(orderDto, orderMaster, productInfoMap);
         //插入数据
         orderMasterMapper.insert(orderMaster);
         orderDetailMapper.insertOrderDetailList(orderDetailList);
@@ -71,15 +74,21 @@ public class OrderMasterServiceImpl implements OrderMasterService {
      * 生成一批订单明细
      * @param orderDto
      * @param orderMaster
+     * @param productInfoMap
      * @return
      */
-    private List<OrderDetail> generateOrderDetailList(OrderDto orderDto, OrderMaster orderMaster) {
+    private List<OrderDetail> generateOrderDetailList(OrderDto orderDto, OrderMaster orderMaster, Map<String, ProductInfo> productInfoMap) {
         List<OrderDetail> orderDetailList = orderDto.getCartList().stream()
                 .map(item -> {
                     OrderDetail orderDetail = new OrderDetail();
                     BeanUtils.copyProperties(item, orderDetail);
                     orderDetail.setOrderDetailId(KeyUtil.generateKey());
                     orderDetail.setOrderId(orderMaster.getOrderId());
+                    orderDetail.setProductIcon(productInfoMap.get(item.getProductId()).getProductIcon());
+                    orderDetail.setCreateTime(new Date());
+                    orderDetail.setUpdateTime(new Date());
+                    item.setOrderId(orderMaster.getOrderId());
+                    item.setOrderDetailId(orderDetail.getOrderDetailId());
                     return orderDetail;
                 }).collect(Collectors.toList());
         return orderDetailList;
@@ -100,6 +109,9 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         orderMaster.setOrderAmount(totalAmount);
         orderMaster.setCreateTime(new Date());
         orderMaster.setUpdateTime(new Date());
+        orderDto.setOrderId(orderMaster.getOrderId());
+        orderDto.setOrderStatus(orderMaster.getOrderStatus());
+        orderDto.setPayStatus(orderMaster.getPayStatus());
         return orderMaster;
     }
 
@@ -251,13 +263,15 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     /**
      * 检查商品是否存在以及价格是否正确
      * @param orderDto
-     * @param productInfoList
+     * @param productInfoMap
      */
-    private void checkOrderProduct(OrderDto orderDto, List<ProductInfo> productInfoList){
+    private void checkOrderProduct(OrderDto orderDto, Map<String, ProductInfo> productInfoMap){
         for (CartDto cart : orderDto.getCartList()) {
-            ProductInfo productInfo = productInfoList.stream().filter(item -> item.getProductId().equals(cart.getProductId())).collect(Collectors.toList())
-                    .stream().findFirst().orElseThrow(()-> new BusinessException(ResponseEnum.PRODUCT_NOT_EXIST));
-
+            ProductInfo productInfo = productInfoMap.get(cart.getProductId());
+            if (productInfo == null){
+                log.error("商品不存在,{}", cart.getProductId());
+                throw new BusinessException(ResponseEnum.PRODUCT_NOT_EXIST);
+            }
             if (productInfo.getProductPrice().compareTo(cart.getProductPrice()) != 0){
                 log.error("商品价格不正确");
                 throw new BusinessException(ResponseEnum.PRODUCT_PRICE_NOT_VALID);
