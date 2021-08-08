@@ -254,7 +254,7 @@ public class OrderMasterServiceImpl implements OrderMasterService {
         //查找订单
         OrderMaster orderMaster = getOrderMasterWithIdCheck(orderId, openid);
         //判断状态
-        if (orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
+        if (!orderMaster.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
             log.error("订单状态错误，{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
