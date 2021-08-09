@@ -238,10 +238,6 @@ public class OrderMasterServiceImpl implements OrderMasterService {
             log.error("订单状态不正确,{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
-        if (!orderMaster.getPayStatus().equals(PayStatusEnum.PAID.getCode())){
-            log.error("订单支付状态错误,{}", orderId);
-            throw new BusinessException(ResponseEnum.ORDER_PAY_STATUS_NOT_CORRECT);
-        }
         orderMaster.setOrderStatus(OrderStatusEnum.FINISH.getCode());
         orderMaster.setUpdateTime(new Date());
         orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
