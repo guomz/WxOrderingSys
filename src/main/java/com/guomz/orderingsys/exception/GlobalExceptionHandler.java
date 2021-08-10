@@ -23,29 +23,41 @@ public class GlobalExceptionHandler {
 
     /**
      * 处理未知异常
+     *
      * @param e
      * @param req
      * @return
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity handlerUnkonwnException(Exception e, HttpServletRequest req){
-        log.error(e.getMessage(),e);
+    ResponseEntity handleUnkonwnException(Exception e, HttpServletRequest req) {
+        log.error(e.getMessage(), e);
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         BusinessResponse response = new BusinessResponse(ResponseEnum.UNKNOW_ERROR);
         return new ResponseEntity<>(response, headers, httpStatus);
     }
 
+    @ExceptionHandler(BusinessException.class)
+    ResponseEntity handleBusinessException(BusinessException e, HttpServletRequest request) {
+        log.error(e.getMessage(), e);
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpHeaders headers = new HttpHeaders();
+        BusinessResponse response = new BusinessResponse(e.getCode(), e.getMsg());
+        return new ResponseEntity<>(response, headers, httpStatus);
+    }
+
     /**
      * 捕获303对于body中的对象字段校验
+     *
      * @param e
      * @param request
      * @return
-     */@ExceptionHandler(MethodArgumentNotValidException.class)
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request){
+    ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-        if (fieldErrors != null && !fieldErrors.isEmpty()){
+        if (fieldErrors != null && !fieldErrors.isEmpty()) {
             String message = fieldErrors.get(0).getDefaultMessage();
             log.error(message, e);
         }
@@ -57,12 +69,14 @@ public class GlobalExceptionHandler {
 
     /**
      * 捕获303对于request param单个参数的校验
+     *
      * @param e
      * @param request
      * @return
-     */@ExceptionHandler(ConstraintViolationException.class)
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
-    ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request){
+    ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         BusinessResponse response = new BusinessResponse(ResponseEnum.INVALID_ARGS);

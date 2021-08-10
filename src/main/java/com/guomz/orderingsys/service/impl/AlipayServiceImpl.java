@@ -32,11 +32,14 @@ public class AlipayServiceImpl implements AlipayService {
     @Override
     public String payOrder(String orderId) {
         //获取订单信息
-        //OrderMaster orderMaster = orderMasterService.getOrderMasterNotNull(orderId);
+        OrderMaster orderMaster = orderMasterService.getOrderMasterNotNull(orderId);
         //调用sdk支付
         AlipayTradePagePayResponse payResponse;
         try {
-            payResponse = Factory.Payment.Page().pay("测试订单", orderId, "1", alipayConfiguration.getReturnUrl());
+            log.info(alipayConfiguration.getReturnUrl());
+            payResponse = Factory.Payment.Page().pay("测试订单", orderId, orderMaster.getOrderAmount().toString(),
+                    alipayConfiguration.getReturnUrl());
+//                    "http://www.baidu.com");
             if (ResponseChecker.success(payResponse)){
                 log.info("调用sdk支付成功");
             }else {
@@ -47,6 +50,8 @@ public class AlipayServiceImpl implements AlipayService {
             log.error("调用sdk支付失败");
             throw new BusinessException();
         }
+        //将订单状态改为预支付
+        orderMasterMapper.updateOrderPayStatus(orderId, PayStatusEnum.UNPAID.getCode(), PayStatusEnum.PRE_PAID.getCode(), new Date());
         return payResponse.getBody();
     }
 

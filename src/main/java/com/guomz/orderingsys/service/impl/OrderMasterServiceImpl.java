@@ -5,8 +5,10 @@ import com.github.pagehelper.PageInfo;
 import com.guomz.orderingsys.dao.OrderDetailMapper;
 import com.guomz.orderingsys.dao.OrderMasterMapper;
 import com.guomz.orderingsys.dao.ProductInfoMapper;
+import com.guomz.orderingsys.domain.condition.OrderMasterCondition;
 import com.guomz.orderingsys.domain.dto.CartDto;
 import com.guomz.orderingsys.domain.dto.OrderDto;
+import com.guomz.orderingsys.domain.vo.OrderVo;
 import com.guomz.orderingsys.entity.OrderDetail;
 import com.guomz.orderingsys.entity.OrderMaster;
 import com.guomz.orderingsys.entity.ProductInfo;
@@ -327,5 +329,15 @@ public class OrderMasterServiceImpl implements OrderMasterService {
             throw new BusinessException(ResponseEnum.ORDER_DETAIL_NOT_EXIST);
         }
         return orderDetailList;
+    }
+
+    @Override
+    public List<OrderVo> getOrderVoByCondition(OrderMasterCondition condition) {
+        List<OrderMaster> orderMasterList = orderMasterMapper.selectByCondition(condition);
+        return orderMasterList.stream().map(orderMaster -> {
+            OrderVo orderVo = new OrderVo();
+            BeanUtils.copyProperties(orderMaster, orderVo);
+            return orderVo;
+        }).collect(Collectors.toList());
     }
 }

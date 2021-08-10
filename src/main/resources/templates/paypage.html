@@ -5,6 +5,22 @@
     <title>Title</title>
 </head>
 <body>
-    <a th:href="@{/alipay/payorder}">点击支付</a>
+<!--    <a th:href="@{/alipay/payorder}">点击支付</a>-->
+    <table>
+        <tr>
+            <th>订单号</th>
+            <th>买家姓名</th>
+            <th>订单金额</th>
+            <th>支付链接</th>
+        </tr>
+        <tr th:each="order: ${orderList}">
+            <th th:text="${order.orderId}"></th>
+            <th th:text="${order.buyerName}"></th>
+            <th th:text="${order.orderAmount}"></th>
+            <th>
+                <a th:href="@{/alipay/payorder(orderId=${order.orderId})}">点击支付</a>
+            </th>
+        </tr>
+    </table>
 </body>
 </html>

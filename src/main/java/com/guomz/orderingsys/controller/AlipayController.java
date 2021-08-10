@@ -32,8 +32,8 @@ public class AlipayController {
      * @throws IOException
      */
     @GetMapping("/payorder")
-    public void payOrder(HttpServletResponse response) throws IOException {
-        String result = alipayService.payOrder("8");
+    public void payOrder(HttpServletResponse response, @RequestParam("orderId") String orderId) throws IOException {
+        String result = alipayService.payOrder(orderId);
         response.setContentType("text/html;charset=utf-8");
         //直接将完整的表单html输出到页面
         response.getWriter().write(result);

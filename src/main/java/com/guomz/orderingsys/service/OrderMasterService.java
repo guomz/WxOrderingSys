@@ -1,7 +1,9 @@
 package com.guomz.orderingsys.service;
 
 import com.github.pagehelper.PageInfo;
+import com.guomz.orderingsys.domain.condition.OrderMasterCondition;
 import com.guomz.orderingsys.domain.dto.OrderDto;
+import com.guomz.orderingsys.domain.vo.OrderVo;
 import com.guomz.orderingsys.entity.OrderDetail;
 import com.guomz.orderingsys.entity.OrderMaster;
 
@@ -24,4 +26,6 @@ public interface OrderMasterService {
     OrderMaster getOrderMasterNotNull(String orderId);
 
     List<OrderDetail> getOrderDetailListByOrderId(String orderId);
+
+    List<OrderVo> getOrderVoByCondition(OrderMasterCondition condition);
 }

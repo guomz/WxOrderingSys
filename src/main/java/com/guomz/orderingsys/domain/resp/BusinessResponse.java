@@ -19,4 +19,9 @@ public class BusinessResponse<T> extends BaseResponse{
         this.setMsg(responseEnum.getMessage());
         this.data = data;
     }
+
+    public BusinessResponse(String code, String msg){
+        this.setCode(code);
+        this.setMsg(msg);
+    }
 }

@@ -38,6 +38,7 @@ public class AlipayOrderCheckTask {
         for (OrderMaster orderMaster : orderMasterList) {
             //调用sdk接口查询支付结果
             AlipayTradeQueryResponse queryResponse = alipayService.checkPayment(orderMaster.getOrderId());
+            log.info("查询订单支付状态: {}", queryResponse.getMsg());
             if (queryResponse.getMsg().equals("Success")){
                 orderMasterMapper.updateOrderPayStatus(orderMaster.getOrderId(),PayStatusEnum.PRE_PAID.getCode(), PayStatusEnum.PAY_SUCCESS.getCode(), new Date());
             }
