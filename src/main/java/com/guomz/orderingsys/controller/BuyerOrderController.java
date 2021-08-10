@@ -69,11 +69,11 @@ public class BuyerOrderController {
         return new BusinessResponse<>(ResponseEnum.OK);
     }
 
-    @ApiOperation("支付订单")
-    @PostMapping("/payorder")
-    public BusinessResponse payOrder(@RequestParam(value = "orderId", required = false) @NotBlank(message = "订单id为空") String orderId,
-                                     @RequestParam(value = "openid", required = false) @NotBlank(message = "openid为空") String openid){
-        orderMasterService.payOrder(orderId, openid);
-        return new BusinessResponse<>(ResponseEnum.OK);
-    }
+//    @ApiOperation("支付订单")
+//    @PostMapping("/payorder")
+//    public BusinessResponse payOrder(@RequestParam(value = "orderId", required = false) @NotBlank(message = "订单id为空") String orderId,
+//                                     @RequestParam(value = "openid", required = false) @NotBlank(message = "openid为空") String openid){
+//        orderMasterService.payOrder(orderId, openid);
+//        return new BusinessResponse<>(ResponseEnum.OK);
+//    }
 }

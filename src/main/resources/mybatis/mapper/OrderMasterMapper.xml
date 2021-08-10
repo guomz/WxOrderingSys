@@ -159,4 +159,35 @@
       buyer_openid=#{openid}
     </where>
   </select>
+
+  <update id="updateOrderPayStatus" >
+    update order_master
+    <set>
+      pay_status=#{nowStatus}, update_time=#{updateTime}
+    </set>
+    <where>
+      order_id=#{orderId}
+      and pay_status=#{preStatus}
+    </where>
+  </update>
+
+  <select id="selectByCondition" parameterType="com.guomz.orderingsys.domain.condition.OrderMasterCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_master
+    <where>
+      <if test="orderId != null">
+        and order_id=#{orderId}
+      </if>
+      <if test="payStatus != null">
+        and pay_status=#{payStatus}
+      </if>
+      <if test="orderStatus != null">
+        and order_status = #{orderStatus}
+      </if>
+      <if test="buyerOpenid != null">
+        and buyer_openid=#{buyerOpenid}
+      </if>
+    </where>
+  </select>
 </mapper>

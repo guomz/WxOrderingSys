@@ -2,6 +2,10 @@ package com.guomz.orderingsys.service;
 
 import com.github.pagehelper.PageInfo;
 import com.guomz.orderingsys.domain.dto.OrderDto;
+import com.guomz.orderingsys.entity.OrderDetail;
+import com.guomz.orderingsys.entity.OrderMaster;
+
+import java.util.List;
 
 public interface OrderMasterService {
 
@@ -17,4 +21,7 @@ public interface OrderMasterService {
 
     void payOrder(String orderId, String openid);
 
+    OrderMaster getOrderMasterNotNull(String orderId);
+
+    List<OrderDetail> getOrderDetailListByOrderId(String orderId);
 }

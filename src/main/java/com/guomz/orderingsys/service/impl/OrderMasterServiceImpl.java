@@ -254,11 +254,12 @@ public class OrderMasterServiceImpl implements OrderMasterService {
             log.error("订单状态错误，{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_STATUS_NOT_CORRECT);
         }
-        if (!orderMaster.getPayStatus().equals(PayStatusEnum.UNPAID.getCode())){
+        //支付状态是否为支付成功
+        if (!orderMaster.getPayStatus().equals(PayStatusEnum.PAY_SUCCESS.getCode())){
             log.error("订单支付状态错误，{}", orderId);
             throw new BusinessException(ResponseEnum.ORDER_PAY_STATUS_NOT_CORRECT);
         }
-        //修改状态
+        //修改状态为已支付
         orderMaster.setPayStatus(PayStatusEnum.PAID.getCode());
         orderMaster.setUpdateTime(new Date());
         orderMasterMapper.updateByPrimaryKeySelective(orderMaster);
@@ -288,7 +289,8 @@ public class OrderMasterServiceImpl implements OrderMasterService {
      * @param orderId
      * @return
      */
-    OrderMaster getOrderMasterNotNull(String orderId){
+    @Override
+    public OrderMaster getOrderMasterNotNull(String orderId){
         OrderMaster orderMaster = orderMasterMapper.selectByPrimaryKey(orderId);
         if (orderMaster == null){
             log.error("订单不存在"  );
@@ -317,7 +319,8 @@ public class OrderMasterServiceImpl implements OrderMasterService {
      * @param orderId
      * @return
      */
-    List<OrderDetail> getOrderDetailListByOrderId(String orderId){
+    @Override
+    public List<OrderDetail> getOrderDetailListByOrderId(String orderId){
         List<OrderDetail> orderDetailList = orderDetailMapper.selectDetailByOrderId(orderId);
         if (orderDetailList.isEmpty()){
             log.error("订单明细不存在,{}", orderId);
