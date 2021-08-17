@@ -1,5 +1,6 @@
 package com.guomz.orderingsys.controller;
 
+import com.guomz.orderingsys.domain.dto.ProductCategoryDto;
 import com.guomz.orderingsys.domain.resp.BusinessResponse;
 import com.guomz.orderingsys.domain.vo.CategoryProductVo;
 import com.guomz.orderingsys.domain.vo.ProductBriefVo;
@@ -8,17 +9,18 @@ import com.guomz.orderingsys.entity.ProductInfo;
 import com.guomz.orderingsys.enums.ResponseEnum;
 import com.guomz.orderingsys.service.ProductCategoryService;
 import com.guomz.orderingsys.service.ProductInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/product", produces = "application/json; charset=utf-8")
+@Api(tags = "商品相关")
 public class ProductInfoController {
 
     @Autowired
@@ -27,6 +29,7 @@ public class ProductInfoController {
     private ProductCategoryService productCategoryService;
 
     @GetMapping("/showcategoryproduct")
+    @ApiOperation("获取全部商品")
     public BusinessResponse<List<CategoryProductVo>> getCategoryProductList(){
         //获取全部商品与类目
         List<ProductInfo> productInfoList = productInfoService.getProductInfoOnSale();
@@ -48,5 +51,28 @@ public class ProductInfoController {
                 }).collect(Collectors.toList());
 
         return new BusinessResponse<>(ResponseEnum.OK, resultList);
+    }
+
+    @PostMapping("/addcategory")
+    @ApiOperation("添加分类")
+    public BusinessResponse addProductCategory(@RequestBody ProductCategoryDto productCategoryDto){
+        ProductCategory productCategory = new ProductCategory();
+        BeanUtils.copyProperties(productCategoryDto, productCategory);
+        productCategoryService.addCategory(productCategory);
+        return new BusinessResponse(ResponseEnum.OK);
+    }
+
+    @GetMapping("/showallcategory")
+    @ApiOperation("展示全部分类")
+    public BusinessResponse<List<ProductCategoryDto>> getAllCategory(){
+        List<ProductCategory> categoryList = productCategoryService.getAllCategory();
+        List<ProductCategoryDto> categoryDtoList = categoryList.stream()
+                .map(productCategory -> {
+                    ProductCategoryDto dto = new ProductCategoryDto();
+                    BeanUtils.copyProperties(productCategory, dto);
+                    return dto;
+                }).collect(Collectors.toList());
+
+        return new BusinessResponse<>(ResponseEnum.OK, categoryDtoList);
     }
 }
