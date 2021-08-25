@@ -21,6 +21,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Autowired
     private RedisUtil redisUtil;
 
+
     @Override
     public ProductCategory getCategoryById(Long id) {
         return null;
